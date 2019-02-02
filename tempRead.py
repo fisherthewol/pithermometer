@@ -1,21 +1,24 @@
+import os
 import time
+from typing import List
 
 
-sensor = "/sys/bus/w1/devices/???/w1_slave"
+def getSensors() -> List[str]:
+    return [dev for dev in os.list("/sys/bus/w1/devices/") if "28" in dev[0:2]]
 
 
-def readRawTemp():
+def readRawTemp(sensor: str) -> List[str]:
     """Get raw value for temperature (spec: DEG C *1000)"""
-    with open(sensor, "r") as f:
+    with open(f"/sys/bus/w1/devices/{sensor}/w1_slave", "r") as f:
         data = f.readlines()
     return data
 
 
-def getTemp():
+def getTemp(sensor: str) -> float:
     """Check CRC and convert to DEG C."""
-    data = readRawTemp()
+    data = readRawTemp(sensor)
     while data[0].strip()[-3:] != "YES":
         time.sleep(0.1)
-        data = readRawTemp()
+        data = readRawTemp(sensor)
     (discard, sep, reading) = data.partition(" t=")
     return reading / 1000.0
