@@ -4,6 +4,7 @@ from typing import List
 
 
 def getSensors() -> List[str]:
+    """Return all connected onewire sensors."""
     return [dev for dev in os.list("/sys/bus/w1/devices/") if "28" in dev[0:2]]
 
 
