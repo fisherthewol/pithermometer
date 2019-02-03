@@ -21,5 +21,5 @@ def getTemp(sensor: str) -> float:
     while data[0].strip()[-3:] != "YES":
         time.sleep(0.1)
         data = readRawTemp(sensor)
-    (discard, sep, reading) = data.partition(" t=")
+    (discard, sep, reading) = data[1].partition(" t=")
     return reading / 1000
