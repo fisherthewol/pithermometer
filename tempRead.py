@@ -10,7 +10,7 @@ def getSensors() -> List[str]:
 
 def readRawTemp(sensor: str) -> List[str]:
     """Get raw value for temperature (spec: DEG C *1000)"""
-    with open(f"/sys/bus/w1/devices/{sensor}/w1_slave", "r") as f:
+    with open("/sys/bus/w1/devices/{}/w1_slave".format(sensor), "r") as f:
         data = f.readlines()
     return data
 
