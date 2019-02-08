@@ -1,21 +1,20 @@
 import os
 import time
-from typing import List
 
 
-def getSensors() -> List[str]:
+def getSensors():
     """Return all connected onewire sensors."""
     return [dev for dev in os.list("/sys/bus/w1/devices/") if "28" in dev[0:2]]
 
 
-def readRawTemp(sensor: str) -> List[str]:
+def readRawTemp(sensor):
     """Get raw value for temperature (spec: DEG C *1000)"""
     with open("/sys/bus/w1/devices/{}/w1_slave".format(sensor), "r") as f:
         data = f.readlines()
     return data
 
 
-def getTemp(sensor: str) -> float:
+def getTemp(sensor):
     """Check CRC and convert to DEG C."""
     data = readRawTemp(sensor)
     while data[0].strip()[-3:] != "YES":
