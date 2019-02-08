@@ -4,7 +4,7 @@ import time
 
 def getSensors():
     """Return all connected onewire sensors."""
-    return [dev for dev in os.list("/sys/bus/w1/devices/") if "28" in dev[0:2]]
+    return [dev for dev in os.listdir("/sys/bus/w1/devices/") if "28" in dev[0:2]]
 
 
 def readRawTemp(sensor):
