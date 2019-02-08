@@ -23,3 +23,15 @@ def getTemp(sensor: str) -> float:
         data = readRawTemp(sensor)
     (discard, sep, reading) = data[1].partition(" t=")
     return reading / 1000
+
+
+def main():
+    sensors = getSensors()
+    while True:
+        for sensor in sensors:
+            print(str(getTemp(sensor)))
+        time.sleep(1)
+
+
+if __name__ == "__main__":
+    main()
