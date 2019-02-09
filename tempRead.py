@@ -27,8 +27,8 @@ def getTemp(sensor):
 def main():
     sensors = getSensors()
     while True:
-        for sensor in sensors:
-            print(str(getTemp(sensor)))
+        for index, sensor in enumerate(sensors):
+            print(str(index), str(getTemp(sensor)))
         time.sleep(1)
 
 
