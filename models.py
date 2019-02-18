@@ -1,7 +1,8 @@
 import datetime
 import peewee
 
-db = peewee.PostgresqlDatabase(None)
+
+db = peewee.PostgresqlDatabase("test_db", user="readings")
 
 
 class BaseModel(peewee.Model):

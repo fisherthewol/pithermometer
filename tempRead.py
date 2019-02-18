@@ -1,3 +1,4 @@
+import models
 import os
 import time
 
@@ -22,6 +23,12 @@ def getTemp(sensor):
         data = readRawTemp(sensor)
     (discard, sep, reading) = data[1].partition(" t=")
     return float(reading) / 1000
+
+
+def saveToDatabase(sens, temp):
+    """Save reading to the database."""
+    x = models.Reading(sensor=sens, temperature=temp)
+    x.save()
 
 
 def main():
