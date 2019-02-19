@@ -32,11 +32,11 @@ def saveToDatabase(sens, temp):
 
 
 def main():
-    sensors = getSensors()
     while True:
-        for index, sensor in enumerate(sensors):
-            print(str(index), str(getTemp(sensor)))
-        time.sleep(1)
+        sensors = getSensors()
+        for sensor in sensors:
+            saveToDatabase(sensor, getTemp(sensor))
+        time.sleep(30)
 
 
 if __name__ == "__main__":
