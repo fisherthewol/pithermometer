@@ -1,8 +1,11 @@
 import datetime
+import os
 import peewee
 
 
-db = peewee.PostgresqlDatabase("test_db", user="readings")
+db = peewee.PostgresqlDatabase(os.environ.get("database"),
+                               user=os.environ.get("db_user"),
+                               password=os.environ.get("db_passwd"))
 
 
 class BaseModel(peewee.Model):
