@@ -27,8 +27,9 @@ def getTemp(sensor):
 
 def saveToDatabase(sens, temp):
     """Save reading to the database."""
-    x = models.Reading(sensor=sens, temperature=temp)
-    x.save()
+    with models.db:
+        x = models.Reading(sensor=sens, temperature=temp)
+        x.save()
 
 
 def main():
