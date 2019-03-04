@@ -25,7 +25,7 @@ def main():
     sensors = getSensors()
     for sensor in sensors:
         with db:
-            cursor = db.execute_sql("SELECT * FROM reading WHERE sensor = ? ORDER BY timestamp DESC", (sensor,))
+            cursor = db.execute_sql("SELECT * FROM reading WHERE sensor = ? ORDER BY 'timestamp' DESC", (sensor,))
             x = cursor.fetchone()
         print("Sensor " + x[3] + ": " + x[4] + "°C.")
         return
