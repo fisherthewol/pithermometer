@@ -1,11 +1,10 @@
 from inky import InkyWHAT
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 
-i_d = InkyWHAT("black")
-i_d.set_border(i_d.WHITE)
-img = Image.open("img.png")
-pal_img = Image.new("P", (1, 1))
-pal_img.putpalette((255, 255, 255, 0, 0, 0, 255, 0, 0) + (0, 0, 0) * 252)
-img = img.conver("RGB").quantize(palette=pal_img)
-i_d.set_image(img)
-i_d.show()
+display = InkyWHAT("black")
+img = Image.new("P", display.size, display.WHITE)
+draw_context = ImageDraw(img)
+font = ImageFont.truetype("RobotoSlab-Regular.ttf", 22)
+draw_context.text((20, 20), "28-00000a81ec36: 18.5°C", display.BLACK, font)
+display.set_image(img)
+display.show()
