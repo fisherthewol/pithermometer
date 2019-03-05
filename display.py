@@ -25,7 +25,7 @@ def main():
                      .where(models.Reading.sensor == sensor)
                      .order_by(models.Reading.timestamp.desc()))
         print("Sensor {}: {}°C".format(sensor, query[0].temperature))
-        return
+    return
 
 
 if __name__ == "__main__":

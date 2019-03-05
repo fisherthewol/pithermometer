@@ -20,6 +20,6 @@ class Reading(BaseModel):
     temperature = peewee.FloatField()
 
 
-# Create tables (passes silently if already exisiting.)
+# Create tables (passes silently if already exists.)
 with db:
     db.create_tables([Reading])
