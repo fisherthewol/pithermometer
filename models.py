@@ -18,3 +18,10 @@ class Reading(BaseModel):
     timestamp = peewee.DateTimeField(default=datetime.datetime.now)
     sensor = peewee.FixedCharField(max_length=15)
     temperature = peewee.FloatField()
+
+
+with db:
+    # IF reading doesn't exist:
+    # db.create_tables()
+    # else:
+    # pass
