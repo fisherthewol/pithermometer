@@ -4,17 +4,17 @@ import peewee
 
 
 db = peewee.PostgresqlDatabase(os.environ.get("database"),
-                               user=os.environ.get("db_user"),
-                               password=os.environ.get("db_passwd"))
+                               pragmas={"journal_mode": "wal"})
 
 
 class BaseModel(peewee.Model):
-    """Base model to use our PostgreSQL Database."""
+    """Base model."""
     class Meta:
         database = db
 
 
 class Reading(BaseModel):
+    """A reading of <temperature> from sensor <sensor>."""
     timestamp = peewee.DateTimeField(default=datetime.datetime.now)
     sensor = peewee.FixedCharField(max_length=15)
     temperature = peewee.FloatField()
