@@ -1,14 +1,10 @@
-import os
 import models
-from inky import InkyWHAT
-from PIL import Image, ImageDraw, ImageFont
+# from inky import InkyWHAT
+# from PIL import Image, ImageDraw, ImageFont
 from tempRead import getSensors
 
 
-display = InkyWHAT("black")
-db = peewee.PostgresqlDatabase(os.environ.get("database"),
-                               user="display",
-                               password="demo")
+# display = InkyWHAT("black")
 # img = Image.new("P", (display.width, display.height), display.WHITE)
 # draw_context = ImageDraw.Draw(img)
 # roboto = ImageFont.truetype("RobotoSlab-Regular.ttf", 22)
@@ -25,11 +21,10 @@ def main():
     sensors = getSensors()
     for sensor in sensors:
         with models.db:
-            query = models.Reading
-                    .select(models.Reading.sensor, models.Reading.temperature)
-                    .where(models.Reading.sensor == sensor)
-                    .order_by(models.Reading.timestamp.desc())
-        print(query[0])
+            query = (models.Reading.select()
+                     .where(models.Reading.sensor == sensor)
+                     .order_by(models.Reading.timestamp.desc()))
+        print("Sensor {}: {}°C".format(sensor, query[0].temperature))
         return
 
 
