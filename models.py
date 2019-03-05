@@ -3,8 +3,8 @@ import os
 import peewee
 
 
-db = peewee.PostgresqlDatabase(os.environ.get("database"),
-                               pragmas={"journal_mode": "wal"})
+db = peewee.SqliteDatabase(os.environ.get("database"),
+                           pragmas={"journal_mode": "wal"})
 
 
 class BaseModel(peewee.Model):
