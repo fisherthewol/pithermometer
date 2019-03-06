@@ -17,10 +17,10 @@ roboto = ImageFont.truetype("RobotoSlab-Regular.ttf", 22)
 def drawScreen(loftemps):
     img = Image.new("P", (display.width, display.height), display.WHITE)
     draw_context = ImageDraw.Draw(img)
-    for idx, sensor in enumerate(loftemps):
-        output = "{}: {}°C".format(sensor[0], sensor[1])
-        posy = (idx*draw_context.textsize(output)[1] + 10) + 10
-        draw_context.text((10, posy), output, display.BLACK, font=roboto)
+    output = ""
+    for sensor in loftemps:
+        output += "{}: {}°C\n".format(sensor[0], sensor[1])
+    draw_context.multiline_text((10, 10), output, display.BLACK, font=roboto)
     display.set_image(img)
     display.show()
 
