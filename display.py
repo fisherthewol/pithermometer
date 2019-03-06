@@ -17,20 +17,22 @@ roboto = ImageFont.truetype("RobotoSlab-Regular.ttf", 22)
 def drawScreen(loftemps):
     img = Image.new("P", (display.width, display.height), display.WHITE)
     draw_context = ImageDraw.Draw(img)
+    for idx, sensor in enumerate(loftemps):
+        posy = 10  # + idx * size of font
+        draw_context.text((10, posy), "{}: {}°C".format(sensor[0], sensor[1]), display.BLACK, font=roboto)
 
 
 def main():
     # while True:
     sensors = getSensors()
-    temps = {}
+    temps = []
     for sensor in sensors:
         with models.db:
             query = (models.Reading.select()
                      .where(models.Reading.sensor == sensor)
                      .order_by(models.Reading.timestamp.desc()))
-        temps[sensor] = query[0].temperature
-    drawScreen(temps)
-        # print("Sensor {}: {}°C".format(sensor, query[0].temperature))
+        temps.append((sensor, query[0].temperature))
+    print(temps)
     # return
 
 
