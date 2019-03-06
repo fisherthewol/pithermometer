@@ -34,7 +34,8 @@ def main():
             query = (models.Reading.select()
                      .where(models.Reading.sensor == sensor)
                      .order_by(models.Reading.timestamp.desc()))
-        temps.append((sensor, query[0].temperature))
+        if len(query) > 0:
+            temps.append((sensor, query[0].temperature))
     print(temps)
     drawScreen(temps)
 
