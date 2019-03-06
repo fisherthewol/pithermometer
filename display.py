@@ -36,7 +36,7 @@ def main():
                      .order_by(models.Reading.timestamp.desc()))
         temps.append((sensor, query[0].temperature))
     print(temps)
-    # return
+    drawScreen(temps)
 
 
 if __name__ == "__main__":
