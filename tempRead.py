@@ -22,7 +22,11 @@ def getTemp(sensor):
     """Check CRC and convert to °C."""
     data = readRawTemp(sensor)
     if data:
+        x = 100
         while data[0].strip()[-3:] != "YES":
+            x -= 1
+            if x <= 0:
+                return None
             time.sleep(0.1)
             data = readRawTemp(sensor)
         (discard, sep, reading) = data[1].partition(" t=")
