@@ -10,19 +10,25 @@ def getSensors():
 
 def readRawTemp(sensor):
     """Get raw value for temperature (spec: °C*1000)."""
-    with open("/sys/bus/w1/devices/{}/w1_slave".format(sensor), "r") as f:
-        data = f.readlines()
-    return data
+    try:
+        with open("/sys/bus/w1/devices/{}/w1_slave".format(sensor), "r") as f:
+            data = f.readlines()
+        return data
+    except FileNotFoundError:
+        return None
 
 
 def getTemp(sensor):
     """Check CRC and convert to °C."""
     data = readRawTemp(sensor)
-    while data[0].strip()[-3:] != "YES":
-        time.sleep(0.1)
-        data = readRawTemp(sensor)
-    (discard, sep, reading) = data[1].partition(" t=")
-    return float(reading) / 1000
+    if data:
+        while data[0].strip()[-3:] != "YES":
+            time.sleep(0.1)
+            data = readRawTemp(sensor)
+        (discard, sep, reading) = data[1].partition(" t=")
+        return float(reading) / 1000
+    else:
+        return None
 
 
 def saveToDatabase(sens, temp):
@@ -36,7 +42,9 @@ def main():
     while True:
         sensors = getSensors()
         for sensor in sensors:
-            saveToDatabase(sensor, getTemp(sensor))
+            temp = getTemp(sensor)
+            if temp:
+                saveToDatabase(sensor, temp)
         time.sleep(30)
 
 
