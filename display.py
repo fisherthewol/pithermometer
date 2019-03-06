@@ -18,8 +18,11 @@ def drawScreen(loftemps):
     img = Image.new("P", (display.width, display.height), display.WHITE)
     draw_context = ImageDraw.Draw(img)
     for idx, sensor in enumerate(loftemps):
-        posy = 10  # + idx * size of font
-        draw_context.text((10, posy), "{}: {}°C".format(sensor[0], sensor[1]), display.BLACK, font=roboto)
+        output = "{}: {}°C".format(sensor[0], sensor[1])
+        posy = (idx*draw_context.textsize(output)[1] + 10) + 10
+        draw_context.text((10, posy), output, display.BLACK, font=roboto)
+    display.set_image(img)
+    display.show()
 
 
 def main():
