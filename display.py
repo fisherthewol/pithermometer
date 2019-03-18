@@ -32,7 +32,7 @@ def main():
             if len(query) > 0:
                 temps.append((sensor, query[0].temperature))
         drawScreen(temps)
-        time.sleep(35)
+        time.sleep(30)
 
 
 if __name__ == "__main__":
