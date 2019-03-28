@@ -1,26 +1,23 @@
 import os
 import requests
-import models
+import json
+# import models
 from tempRead import getSensors
 
 
 baseurl = os.getenv("api_url")
 
 
-def checkequal(l1, l2):
-    return len(L1) == len(L2) and sorted(L1) == sorted(L2)
-
-
-
 def main():
-    knownsensors = []
     while True:
-        sensors = getSensors()
-        if checkequal(knownsensors, sensors):
-            pass
-        for sensor in knownsensors:
-                d = {"serial": sensor, "name": os.secrets.token_urlsafe, "connected": true}
-                r = requests.post(baseurl + "/sensors", data=d)
+        currentsensors = getSensors()
+        for sensor in currentsensors:
+            d = {"serial": sensor, "name": os.secrets.token_urlsafe, "connected": True}
+            r = requests.post(baseurl + "/sensors", data=json.dumps(d))
+            if r.status_code == 409:
+                r1 = requests.put(baseurl + "/sensors", data=json.dumps(d))
+                if r.status_code != 200:
+                    raise SystemExit("SOmething is wrong.")
 
 
 if __name__ == "__main__":
