@@ -26,7 +26,11 @@ def dispatchSensor(sensor):
 
 
 def dispatchReadings(sensor):
-    pass
+    q = models.Reading.select().where(models.Reading.sensor == sensor).order_by(models.Reading.timestamp.desc())
+    d = {"sensor": q[0].serial, "timestamp": q[0].timestamp, "temperature": q[0].temperature}
+    r = requests.post(baseurl + "/readings", data=json.dumps(d))
+    if r.status_code != 200:
+        raise SystemExit("Something is wrong.")
 
 
 def main():
