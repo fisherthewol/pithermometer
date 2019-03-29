@@ -1,23 +1,48 @@
 import os
 import requests
 import json
-# import models
+import models
 from tempRead import getSensors
 
 
 baseurl = os.getenv("api_url")
 
 
+def dispatchSensor(sensor):
+    d = {"serial": sensor.serial,
+         "name": sensor.name,
+         "connected": sensor.connected}
+    r = requests.post(baseurl + "/sensors", data=json.dumps(d))
+    if r.status_code == 409:
+        r1 = requests.get(baseurl + "/sensors")
+        j = r1.json()
+        for i in j:
+            if i["serial"] == sensor.serial:
+                x = i["id"]
+        r2 = requests.put(baseurl + "/sensors/" + x, data=json.dumps(d))
+        if r2.status_code != 200:
+            raise SystemExit("Something is wrong.")
+    return "Success"
+
+
+def dispatchReadings(sensor):
+    pass
+
+
 def main():
     while True:
-        currentsensors = getSensors()
-        for sensor in currentsensors:
-            d = {"serial": sensor, "name": os.secrets.token_urlsafe, "connected": True}
-            r = requests.post(baseurl + "/sensors", data=json.dumps(d))
-            if r.status_code == 409:
-                r1 = requests.put(baseurl + "/sensors", data=json.dumps(d))
-                if r.status_code != 200:
-                    raise SystemExit("SOmething is wrong.")
+        connectedsensors = []
+        for sensor in getSensors():
+            x = models.Sensor.get_or_create(serial=sensor,
+                                            defaults={"name": os.secrets.token_urlsafe,
+                                                      "connected": True})
+            connectedsensors.append(x)
+        for sensor in models.Sensor.select():
+            if sensor not in connectedsensors:
+                sensor.connected = False
+        for sensor in models.Sensor.select().where(models.Sensor.connected == True):
+            dispatchSensor(sensor)
+            dispatchReadings(sensor)
 
 
 if __name__ == "__main__":
