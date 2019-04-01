@@ -13,6 +13,13 @@ class BaseModel(peewee.Model):
         database = db
 
 
+class Sensor(BaseModel):
+    """Representation of a sensor."""
+    serial = peewee.FixedCharField(max_length=15)
+    name = peewee.CharField()
+    connected = peewee.BooleanField()
+
+
 class Reading(BaseModel):
     """A reading of <temperature> from sensor <sensor>."""
     timestamp = peewee.DateTimeField(default=datetime.datetime.now)
