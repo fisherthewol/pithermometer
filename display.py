@@ -3,6 +3,7 @@ from inky import InkyWHAT
 from PIL import Image, ImageDraw, ImageFont
 from tempRead import getSensors
 import time
+import datetime
 
 
 display = InkyWHAT("black")
