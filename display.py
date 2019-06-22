@@ -3,6 +3,7 @@ from inky import InkyWHAT
 from PIL import Image, ImageDraw, ImageFont
 from tempRead import getSensors
 import time
+import datetime
 
 
 display = InkyWHAT("black")
@@ -15,6 +16,7 @@ def drawScreen(loftemps):
     output = ""
     for sensor in loftemps:
         output += "{}: {}°C\n".format(sensor[0], sensor[1])
+    output += "Last updated at\n{}".format(str(datetime.datetime.now())) 
     draw_context.multiline_text((10, 10), output, display.BLACK, font=roboto)
     display.set_image(img)
     display.show()
