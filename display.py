@@ -16,7 +16,7 @@ def drawScreen(loftemps):
     output = ""
     for sensor in loftemps:
         output += "{}: {}°C\n".format(sensor[0], sensor[1])
-    output += "Last updated at\n{}".format(str(datetime.datetime.now())) 
+    output += "Last updated at\n{}".format(str(datetime.datetime.now()))
     draw_context.multiline_text((10, 10), output, display.BLACK, font=roboto)
     display.set_image(img)
     display.show()
@@ -28,11 +28,9 @@ def main():
         temps = []
         for sensor in sensors:
             with models.db:
-                query = (models.Reading.select()
-                         .where(models.Reading.sensor == sensor)
-                         .order_by(models.Reading.timestamp.desc()))
-            if len(query) > 0:
-                temps.append((sensor, query[0].temperature))
+                query = models.Reading.get_or_none(models.Reading.sensor == sensor).order_by(models.Reading.timestamp.desc())
+            if query:
+                temps.append((sensor, query.temperature))
         drawScreen(temps)
         time.sleep(30)
 
