@@ -28,9 +28,11 @@ def main():
         temps = []
         for sensor in sensors:
             with models.db:
-                query = models.Reading.get_or_none(models.Reading.sensor == sensor)
-            if query:
-                temps.append((sensor, query.temperature))
+                query = (models.Reading.select()
+                         .where(models.Reading.sensor == sensor)
+                         .order_by(models.Reading.timestamp.desc()).limit(1))
+            if len(query) > 0:
+                temps.append((sensor, query[0].temperature))
         drawScreen(temps)
         time.sleep(30)
 
