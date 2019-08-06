@@ -1,13 +1,23 @@
+import datetime
+import time
+from peewee import fn
 import models
 from inky import InkyWHAT
 from PIL import Image, ImageDraw, ImageFont
 from tempRead import getSensors
-import time
-import datetime
 
 
 display = InkyWHAT("black")
 roboto = ImageFont.truetype("RobotoSlab-Regular.ttf", 22)
+
+
+def highlow(sensor):
+    today = datetime.datetime.combine(datetime.date.today(), datetime.time())
+    with models.db:
+        query = models.Reading.select().where((models.Reading.timestamp >= today) & (models.Reading.sensor == sensor))
+        maxtemp = query.select(fn.MAX(models.Reading.temperature))
+        mintemp = query.select(fn.MIN(models.Reading.temperature))
+    return (maxtemp, mintemp)
 
 
 def drawScreen(loftemps):
@@ -30,9 +40,9 @@ def main():
             with models.db:
                 query = (models.Reading.select()
                          .where(models.Reading.sensor == sensor)
-                         .order_by(models.Reading.timestamp.desc()).limit(1))
-            if len(query) > 0:
-                temps.append((sensor, query[0].temperature))
+                         .order_by(models.Reading.timestamp.desc()).get())
+            if query:
+                temps.append((sensor, query.temperature))
         drawScreen(temps)
         time.sleep(30)
 
