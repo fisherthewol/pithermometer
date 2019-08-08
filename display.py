@@ -1,6 +1,5 @@
 import datetime
 import time
-from peewee import fn
 import models
 from inky import InkyWHAT
 from PIL import Image, ImageDraw, ImageFont
@@ -14,10 +13,16 @@ roboto = ImageFont.truetype("RobotoSlab-Regular.ttf", 22)
 def highlow(sensor):
     today = datetime.datetime.combine(datetime.date.today(), datetime.time())
     with models.db:
-        query = models.Reading.select().where((models.Reading.timestamp >= today) & (models.Reading.sensor == sensor))
-        maxtemp = query.select(fn.MAX(models.Reading.temperature))
-        mintemp = query.select(fn.MIN(models.Reading.temperature))
-    return (maxtemp, mintemp)
+        maxtmp = (models.Reading.select(models.Reading.temperature)
+                  .where((models.Reading.timestamp >= today) & (models.Reading.sensor == sensor))
+                  .order_by(models.Reading.temperature.desc()).get())
+        mintmp = (models.Reading.select(models.Reading.temperature)
+                  .where((models.Reading.timestamp >= today) & (models.Reading.sensor == sensor))
+                  .order_by(models.Reading.temperature.asc()).get())
+    if maxtmp:
+        return (maxtmp, mintmp)
+    else:
+        return None
 
 
 def drawScreen(loftemps):
@@ -26,6 +31,7 @@ def drawScreen(loftemps):
     output = ""
     for sensor in loftemps:
         output += "{}: {}°C\n".format(sensor[0], sensor[1])
+        output += "High: {} || Low: {}".format(sensor[2], sensor[3])
     output += "Last updated at\n{}".format(str(datetime.datetime.now()))
     draw_context.multiline_text((10, 10), output, display.BLACK, font=roboto)
     display.set_image(img)
@@ -42,7 +48,12 @@ def main():
                          .where(models.Reading.sensor == sensor)
                          .order_by(models.Reading.timestamp.desc()).get())
             if query:
-                temps.append((sensor, query.temperature))
+                highlo = highlow(sensor)
+                if highlo:
+                    temps.append((sensor,
+                                  query.temperature,
+                                  highlo[0],
+                                  highlo[1]))
         drawScreen(temps)
         time.sleep(30)
 
